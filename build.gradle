@@ -67,4 +67,8 @@ dependencies {
 
     // Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT
+    implementation group: 'io.jsonwebtoken',name:'jjwt',version:'0.9.1'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
 }
