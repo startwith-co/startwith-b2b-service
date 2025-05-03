@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import startwithco.b2bservice.b2b.entity.ConsumerEntity;
 import startwithco.b2bservice.b2b.entity.VendorEntity;
+import startwithco.b2bservice.b2b.exception.badRequest.BadRequestErrorResult;
+import startwithco.b2bservice.b2b.exception.badRequest.BadRequestException;
 import startwithco.b2bservice.b2b.exception.conflict.ConflictErrorResult;
 import startwithco.b2bservice.b2b.exception.conflict.ConflictException;
 
@@ -39,5 +41,17 @@ public class B2bRepositoryImpl implements B2bRepository {
     @Override
     public ConsumerEntity saveConsumer(ConsumerEntity consumerEntity) {
         return consumerJpaRepository.save(consumerEntity);
+    }
+
+    @Override
+    public VendorEntity findVendorByEmail(String email) {
+        return vendorJpaRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException(BadRequestErrorResult.EMAIL_BAD_REQUEST_EXCEPTION));
+    }
+
+    @Override
+    public ConsumerEntity findConsumerByEmail(String email) {
+        return consumerJpaRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException(BadRequestErrorResult.EMAIL_BAD_REQUEST_EXCEPTION));
     }
 }

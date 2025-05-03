@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import startwithco.b2bservice.b2b.base.BaseResponse;
-import startwithco.b2bservice.b2b.dto.B2bRequest;
+import startwithco.b2bservice.b2b.dto.B2bResponse;
 import startwithco.b2bservice.b2b.exception.badRequest.BadRequestErrorResult;
 import startwithco.b2bservice.b2b.exception.badRequest.BadRequestException;
 import startwithco.b2bservice.b2b.exception.badRequest.BadRequestExceptionHandler;
@@ -24,6 +24,7 @@ import startwithco.b2bservice.b2b.exception.server.ServerExceptionHandler;
 import startwithco.b2bservice.b2b.service.B2bService;
 
 import static startwithco.b2bservice.b2b.dto.B2bRequest.*;
+import static startwithco.b2bservice.b2b.dto.B2bResponse.*;
 
 @RestController
 @RequestMapping("/api/b2b-service")
@@ -63,7 +64,7 @@ public class B2BController {
     public ResponseEntity<BaseResponse<String>> saveVendor(@Valid @RequestBody SaveVendorRequest request) {
 
         // DTO 유효성 검사
-        saveVendorRequestDto(request);
+        validateSaveVendorRequest(request);
 
         // 저장
         b2bService.saveVendor(request);
@@ -72,7 +73,7 @@ public class B2BController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    private void saveVendorRequestDto(SaveVendorRequest request){
+    private void validateSaveVendorRequest(SaveVendorRequest request){
 
         if (request.vendorName() == null || request.email() == null || request.phoneNum() == null
             || request.password() == null) {
@@ -110,7 +111,7 @@ public class B2BController {
     public ResponseEntity<BaseResponse<String>> saveConsumer(@Valid @RequestBody SaveConsumerRequest request) {
 
         // DTO 유효성 검사
-        saveConsumerRequestDto(request);
+        validateSaveConsumerRequest(request);
 
         // 저장
         b2bService.saveConsumer(request);
@@ -119,13 +120,105 @@ public class B2BController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    private void saveConsumerRequestDto(SaveConsumerRequest request){
+    private void validateSaveConsumerRequest(SaveConsumerRequest request){
 
         if (request.consumerName() == null || request.email() == null || request.phoneNum() == null
                 || request.password() == null || request.industry() == null) {
             throw new BadRequestException(BadRequestErrorResult.DTO_BAD_REQUEST_EXCEPTION);
         }
 
+    }
+
+    @PostMapping(value = "/login/vendor",name = "벤더 로그인")
+    @Operation(summary = "login Vendor API", description = "벤더 로그인 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ServerExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "DB002",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = BadRequestExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB003",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ConflictExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "PB004",
+                    description = "400 PASSWORD_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ConflictExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<LoginResponse>> loginVendor(@Valid @RequestBody LoginRequest request) {
+
+        // DTO 유효성 검사
+        validateLoginRequest(request);
+
+        // 저장
+        LoginResponse loginResponse = b2bService.loginVendor(request);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), loginResponse));
+    }
+
+    @PostMapping(value = "/login/consumer",name = "수요 기업 로그인")
+    @Operation(summary = "login Consumer API", description = "수요 기업 로그인 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ServerExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "DB002",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = BadRequestExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB003",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ConflictExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "PB004",
+                    description = "400 PASSWORD_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ConflictExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<LoginResponse>> loginConsumer(@Valid @RequestBody LoginRequest request) {
+
+        // DTO 유효성 검사
+        validateLoginRequest(request);
+
+        // 저장
+        LoginResponse loginResponse = b2bService.loginConsumer(request);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), loginResponse));
+    }
+
+    private void validateLoginRequest(LoginRequest request) {
+        if(request.email() == null || request.password() == null) {
+            throw new BadRequestException(BadRequestErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+        }
     }
 
 }

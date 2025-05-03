@@ -20,6 +20,12 @@ public class B2bRequest {
     ) {
     }
 
+    public record LoginRequest(
+            String email,
+            String password
+    ) {
+    }
+
 
 
 }

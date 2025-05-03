@@ -12,4 +12,8 @@ public interface B2bRepository {
     void isDuplicatedConsumerName (String consumerName);
 
     ConsumerEntity saveConsumer(ConsumerEntity consumerEntity);
+
+    VendorEntity findVendorByEmail(String email);
+
+    ConsumerEntity findConsumerByEmail(String email);
 }
