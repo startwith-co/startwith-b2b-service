@@ -28,19 +28,24 @@ public class ConsumerEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    /*
-     * TODO
-     *  회원 가입 시 입력 받는 산업군이 뭔지 확인해야함
-     * */
-    public enum SOLUTION {
-        CRM,
-        ERP,
-        HRP
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "industry", nullable = false)
+    private INDUSTRY industry;
 
     public enum INDUSTRY {
-        MANUFACTURING,
-        MEDICAL,
-        LOGISTICS
+        MANUFACTURING,         // 제조
+        LOGISTICS,             // 물류/유통
+        IT_TELECOMMUNICATION,  // 정보통신/IT
+        CONSTRUCTION,          // 건설
+        FINANCE,               // 금융
+        REAL_ESTATE,           // 부동산/임대
+        ACCOMMODATION,         // 숙박
+        FOOD_SERVICE,          // 요식/외식
+        ARTS,                  // 예술
+        SPORTS,                // 스포츠
+        ENVIRONMENT_ENERGY,    // 환경/에너지
+        EDUCATION,             // 교육
+        PUBLIC,                // 공공
+        AGRICULTURE_FORESTRY_FISHERY // 농업/임업/어업
     }
 }
