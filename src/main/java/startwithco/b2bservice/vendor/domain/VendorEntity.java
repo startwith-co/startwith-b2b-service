@@ -36,9 +36,4 @@ public class VendorEntity {
 
     @Column(name = "business_license_image", nullable = false)
     private String businessLicenseImage;
-
-    /*
-    * TODO
-    *  필터링하는 값들은 언제 받는지 확인해야함
-    * */
 }
