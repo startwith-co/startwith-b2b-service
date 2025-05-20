@@ -2,6 +2,7 @@ package startwithco.b2bservice.consumer.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import startwithco.b2bservice.base.BaseTimeEntity;
@@ -13,7 +14,7 @@ import startwithco.b2bservice.base.BaseTimeEntity;
 @DynamicInsert
 @DynamicUpdate
 @Getter
-@Builder
+@SuperBuilder
 public class ConsumerEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +33,6 @@ public class ConsumerEntity extends BaseTimeEntity {
     @Column(name = "industry", nullable = false)
     private String industry;
 
-    @Column(name = "company_image", nullable = true)
-    private String companyImage;
+    @Column(name = "consumer_image_url", nullable = true)
+    private String consumerImageUrl;
 }
